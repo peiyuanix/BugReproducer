@@ -55,7 +55,7 @@ public class Executor {
 
         while (resultSet.next()) {
             List<String> colValues = new ArrayList<>();
-            for (int i = 0; i < metaData.getColumnCount(); i++) {
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 colValues.add(resultSet.getString(i));
             }
             colValuesList.add(colValues);
