@@ -1,0 +1,21 @@
+initUrl: "jdbc:mysql://127.0.0.1:4000?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true&allowLoadLocalInfile=true"
+connUrl: "jdbc:mysql://127.0.0.1:4000/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true&allowLoadLocalInfile=true"
+database: "reproduceDB"
+user: root
+password: ""
+sqlList:
+  - "create table table_7_2(a int primary key, b int, c double);"
+  - "insert into table_7_2 values(676, 5012153, 2240641.4);"
+operationList:
+  - seq: 0
+    trxId: "739"
+    sql: "update table_7_2 set b=-5012153 and c=2240641.4 where a=676;"
+    type: "UPDATE"
+  - seq: 1
+    trxId: "723"
+    sql: "update table_7_2 set b=852150 where a=676;"
+    type: "UPDATE"
+  - seq: 2
+    trxId: "739"
+    sql: "commit;"
+    type: "COMMIT"
