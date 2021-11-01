@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TraceCollector {
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();;
     private static final List<Trace> traceList = new ArrayList<>();
 
     public static void collect(Trace trace) {
