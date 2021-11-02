@@ -1,8 +1,8 @@
-initUrl: "jdbc:mysql://127.0.0.1:4000?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true&allowLoadLocalInfile=true"
-connUrl: "jdbc:mysql://127.0.0.1:4000/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true&allowLoadLocalInfile=true"
+initUrl: "jdbc:mysql://127.0.0.1:3306?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true&allowLoadLocalInfile=true"
+connUrl: "jdbc:mysql://127.0.0.1:3306/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true&allowLoadLocalInfile=true"
 database: "reproduceDB"
 user: "root"
-password: ""
+password: "root"
 initList:
   - "create table table_7_2(a int primary key, b int, c double);"
   - "insert into table_7_2 values(676, 5012153, 2240641.4);"

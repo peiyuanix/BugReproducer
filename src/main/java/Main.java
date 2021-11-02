@@ -27,7 +27,7 @@ public class Main {
                         operationCollection.getUser(),
                         operationCollection.getPassword());
             }
-            executorMap.get(trxId).execute(operation.getSql(), operation.getType());
+            executorMap.get(trxId).execute(operation.getSql());
         }
         for (Executor executor : executorMap.values()) {
             executor.close();
@@ -52,7 +52,7 @@ public class Main {
                 operationCollection.getPassword());
         stat = conn.createStatement();
 
-        for (String sql : operationCollection.getSqlList()) {
+        for (String sql : operationCollection.getInitList()) {
             stat.execute(sql);
         }
     }

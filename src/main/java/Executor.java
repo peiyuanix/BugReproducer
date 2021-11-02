@@ -17,15 +17,16 @@ public class Executor {
         this.conn.setAutoCommit(false);
     }
 
-    public void execute(String sql, OperationType operationType) throws SQLException {
-        switch (operationType) {
+    public void execute(String sql) throws SQLException {
+        OperationType opType = OperationType.detectType(sql);
+        switch (opType) {
             case SELECT:
-                executeQuery(sql, operationType);
+                executeQuery(sql, opType);
                 break;
             case INSERT:
             case UPDATE:
             case DELETE:
-                executeUpdate(sql, operationType);
+                executeUpdate(sql, opType);
                 break;
             case COMMIT:
                 commit();
@@ -66,8 +67,12 @@ public class Executor {
 
     private void executeUpdate(String sql, OperationType type) throws SQLException {
         @Cleanup Statement stat = this.conn.createStatement();
-        int count = stat.executeUpdate(sql);
-
-        TraceCollector.collect(new Trace(executorId, sql, type, count));
+        try {
+            int count = stat.executeUpdate(sql);
+            TraceCollector.collect(new Trace(executorId, sql, type, count));
+        } catch (SQLException e) {
+            TraceCollector.collect(new Trace(executorId, sql, type, e));
+            throw e;
+        }
     }
 }
