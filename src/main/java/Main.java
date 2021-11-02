@@ -12,6 +12,8 @@ public class Main {
         String configPath = args[0];
         OperationCollection operationCollection = OperationCollection.parse(configPath);
         initDb(operationCollection);
+
+        System.out.println("[Executing SQLs]");
         dispatch(operationCollection);
     }
 
@@ -36,6 +38,7 @@ public class Main {
 
     @SneakyThrows
     private static void initDb(OperationCollection operationCollection) {
+        System.out.printf("[Recreating database %s]%n", operationCollection.getDatabase());
         Connection conn = DriverManager.getConnection(
                 operationCollection.getInitUrl(),
                 operationCollection.getUser(),
@@ -46,6 +49,7 @@ public class Main {
         stat.close();
         conn.close();
 
+        System.out.printf("[Initiating database %s]%n", operationCollection.getDatabase());
         conn = DriverManager.getConnection(
                 operationCollection.getConnUrl(),
                 operationCollection.getUser(),
@@ -54,6 +58,7 @@ public class Main {
 
         for (String sql : operationCollection.getInitList()) {
             stat.execute(sql);
+            System.out.printf("\t%s%n", sql);
         }
     }
 }
