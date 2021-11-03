@@ -28,10 +28,19 @@ public class Executor {
             case DELETE:
                 executeUpdate(sql, opType);
                 break;
+            case SET:
+                set(sql, opType);
+                break;
             case COMMIT:
                 commit();
                 break;
         }
+    }
+
+    private void set(String sql, OperationType opType) throws SQLException {
+        @Cleanup Statement stat = this.conn.createStatement();
+        int count = stat.executeUpdate(sql);
+        TraceCollector.collect(new Trace(this.executorId, sql, opType, count));
     }
 
     private void commit() throws SQLException {
