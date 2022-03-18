@@ -13,7 +13,10 @@ public class OperationCollection {
     private String database;
     private String user;
     private String password;
-    private List<String> initList;
+    private boolean create;
+    private boolean load;
+    private List<String> createList;
+    private List<String> loadList;
     private List<Operation> operationList;
 
     public static OperationCollection parse(String src) throws FileNotFoundException {
