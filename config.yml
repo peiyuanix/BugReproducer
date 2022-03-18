@@ -1,11 +1,13 @@
-initUrl: "jdbc:mysql://127.0.0.1:3306?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true&allowLoadLocalInfile=true"
-connUrl: "jdbc:mysql://127.0.0.1:3306/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true&allowLoadLocalInfile=true"
-database: "reproduceDB"
-user: "root"
-password: "root"
+initUrl: "jdbc:postgresql://127.0.0.1:5432/"
+connUrl: "jdbc:postgresql://127.0.0.1:5432/reproduceDB"
+user: "postgres"
+password: "postgres"
 create: true
-load: false
-createList:
+load: true
+createDatabaseList:
+  - "drop database if exists \"reproduceDB\";"
+  - "create database \"reproduceDB\";"
+createTableList:
   - "create table t(k int primary key, v int);"
 loadList:
   - "insert into t values(0, 14458);"

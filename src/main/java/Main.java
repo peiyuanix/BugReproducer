@@ -13,29 +13,29 @@ public class Main {
     @SneakyThrows
     public static void main(String[] args) {
         String configPath = args[0];
-        OperationCollection operationCollection = OperationCollection.parse(configPath);
+        Config config = Config.parse(configPath);
 
-        if (operationCollection.isCreate())
-            createDatabase(operationCollection);
+        if (config.isCreate())
+            create(config);
 
-        if (operationCollection.isLoad())
-            loadData(operationCollection);
+        if (config.isLoad())
+            loadData(config);
 
         System.out.println("[Executing SQLs]");
-        dispatch(operationCollection);
+        dispatch(config);
     }
 
     @SneakyThrows
-    private static void dispatch(OperationCollection operationCollection) {
+    private static void dispatch(Config config) {
         Map<String, Executor> executorMap = new HashMap<>();
-        for (Operation operation : operationCollection.getOperationList()) {
+        for (Operation operation : config.getOperationList()) {
             String trxId = operation.getTrxId();
             if (!executorMap.containsKey(trxId)) {
                 executorMap.put(trxId, new Executor(trxId));
                 executorMap.get(trxId).connect(
-                        operationCollection.getConnUrl(),
-                        operationCollection.getUser(),
-                        operationCollection.getPassword());
+                        config.getConnUrl(),
+                        config.getUser(),
+                        config.getPassword());
             }
             executorMap.get(trxId).execute(operation.getSql());
         }
@@ -44,34 +44,33 @@ public class Main {
         }
     }
 
-    private static void loadData(OperationCollection operationCollection) throws SQLException {
-        System.out.printf("[Initiating database %s]%n", operationCollection.getDatabase());
-        executeSQLList(operationCollection, operationCollection.getLoadList());
+    private static void loadData(Config config) throws SQLException {
+        System.out.printf("[Initiating database]%n");
+        Connection conn = newConnection(config.getConnUrl(), config);
+        executeSQLList(conn, config.getLoadList());
     }
 
-    private static void executeSQLList(OperationCollection operationCollection, List<String> sqlList) throws SQLException {
-        @Cleanup Connection conn = DriverManager.getConnection(
-                operationCollection.getConnUrl(),
-                operationCollection.getUser(),
-                operationCollection.getPassword());
+    private static void executeSQLList(Connection conn, List<String> sqlList) throws SQLException {
         @Cleanup Statement stat = conn.createStatement();
-
         for (String sql : sqlList) {
             stat.execute(sql);
             System.out.printf("\t%s%n", sql);
         }
     }
 
-    private static void createDatabase(OperationCollection operationCollection) throws SQLException {
-        System.out.printf("[Recreating database %s]%n", operationCollection.getDatabase());
-        @Cleanup Connection connWithoutDB = DriverManager.getConnection(
-                operationCollection.getInitUrl(),
-                operationCollection.getUser(),
-                operationCollection.getPassword());
-        @Cleanup Statement statWithoutDB = connWithoutDB.createStatement();
-        statWithoutDB.execute(String.format("drop database if exists `%s`;", operationCollection.getDatabase()));
-        statWithoutDB.execute(String.format("create database `%s`;", operationCollection.getDatabase()));
+    private static void create(Config config) throws SQLException {
+        System.out.printf("[Creating database]%n");
+        @Cleanup Connection connWithoutDB = newConnection(config.getInitUrl(), config);
+        executeSQLList(connWithoutDB, config.getCreateDatabaseList());
 
-        executeSQLList(operationCollection, operationCollection.getCreateList());
+        @Cleanup Connection conn = newConnection(config.getConnUrl(), config);
+        executeSQLList(conn, config.getCreateTableList());
+    }
+
+    private static Connection newConnection(String connUrl, Config operationColl) throws SQLException {
+        return DriverManager.getConnection(
+                connUrl,
+                operationColl.getUser(),
+                operationColl.getPassword());
     }
 }
