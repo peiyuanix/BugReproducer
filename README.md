@@ -2,7 +2,7 @@
 
 ## Build & Package
 ```
-maven assembly:assembly
+mvn assembly:assembly
 ```
 
 Then you can get jar file from maven output directory.
