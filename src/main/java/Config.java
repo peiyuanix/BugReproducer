@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class Config {
+    private String driver;
     private String initUrl;
     private String connUrl;
     private String user;

@@ -15,6 +15,8 @@ public class Main {
         String configPath = args[0];
         Config config = Config.parse(configPath);
 
+        Class.forName(config.getDriver());
+
         if (config.isCreate())
             create(config);
 
