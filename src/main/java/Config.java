@@ -8,6 +8,8 @@ import java.util.List;
 
 @Data
 public class Config {
+    private boolean blocking = true;
+    private Integer blockingTimeout = 1000;
     private String driver;
     private String initUrl;
     private String connUrl;

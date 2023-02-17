@@ -1,6 +1,6 @@
 driver: "com.mysql.cj.jdbc.Driver"
-initUrl: "jdbc:mysql://192.168.169.132:3306?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
-connUrl: "jdbc:mysql://192.168.169.132:3306/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
+initUrl: "jdbc:mysql://192.168.169.131:3306?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
+connUrl: "jdbc:mysql://192.168.169.131:3306/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
 user: "root"
 password: "root"
 create: true

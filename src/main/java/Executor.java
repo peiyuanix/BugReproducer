@@ -1,15 +1,24 @@
 import lombok.Cleanup;
+import lombok.SneakyThrows;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public class Executor {
+public class Executor extends Thread {
     private final String executorId;
     private Connection conn;
+    private BlockingQueue<String> sqlQueue;
 
     public Executor(String executorId) {
         this.executorId = executorId;
+        this.sqlQueue = new LinkedBlockingQueue<>();
+    }
+
+    public void dispatch(String sql) throws InterruptedException {
+        this.sqlQueue.put(sql);
     }
 
     public void connect(String url, String user, String password) throws SQLException {
@@ -17,7 +26,7 @@ public class Executor {
         this.conn.setAutoCommit(false);
     }
 
-    public void execute(String sql) throws SQLException {
+    private void execute(String sql) throws SQLException {
         OperationType opType = OperationType.detectType(sql);
         switch (opType) {
             case SELECT:
@@ -82,6 +91,15 @@ public class Executor {
         } catch (SQLException e) {
             TraceCollector.collect(new Trace(executorId, sql, type, e));
             throw e;
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public void run() {
+        while (true) {
+            String sql = sqlQueue.take();
+            this.execute(sql);
         }
     }
 }

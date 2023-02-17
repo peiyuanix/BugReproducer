@@ -1,0 +1,37 @@
+driver: "com.mysql.cj.jdbc.Driver"
+initUrl: "jdbc:mysql://192.168.169.131:3306?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
+connUrl: "jdbc:mysql://192.168.169.131:3306/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
+user: "root"
+password: "root"
+create: true
+load: true
+createDatabaseList:
+  - "drop database if exists reproduceDB;"
+  - "create database reproduceDB;"
+createTableList:
+  - "create table if not exists t (k integer, v integer, primary key(k));"
+loadList:
+  - "insert into t(k, v) values (1, 1);"
+operationList:
+  - trxId: "1001"
+    sql: "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;"
+  - trxId: "1002"
+    sql: "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;"
+  - trxId: "1001"
+    sql: "start transaction;"
+  - trxId: "1002"
+    sql: "start transaction;"
+  - trxId: "1001"
+    sql: "select * from t;"
+  - trxId: "1002"
+    sql: "select * from t;"
+  - trxId: "1001"
+    sql: "update t set v = 2 where k = 1;"
+  - trxId: "1001"
+    sql: "commit;"
+  - trxId: "1002"
+    sql: "update t set v = 2 where k = 1;"
+  - trxId: "1002"
+    sql: "select k, v from t where k = 1;"
+  - trxId: "1002"
+    sql: "commit;"

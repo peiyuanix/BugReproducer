@@ -38,9 +38,12 @@ public class Main {
                         config.getConnUrl(),
                         config.getUser(),
                         config.getPassword());
+                executorMap.get(trxId).start();
             }
-            executorMap.get(trxId).execute(operation.getSql());
+            executorMap.get(trxId).dispatch(operation.getSql());
+            Thread.sleep(config.getBlockingTimeout());
         }
+
         for (Executor executor : executorMap.values()) {
             executor.close();
         }
