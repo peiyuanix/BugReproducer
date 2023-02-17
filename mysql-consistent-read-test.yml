@@ -1,0 +1,40 @@
+blockingTimeout: 100
+driver: "com.mysql.cj.jdbc.Driver"
+initUrl: "jdbc:mysql://192.168.169.100:3306?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
+connUrl: "jdbc:mysql://192.168.169.100:3306/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
+user: "root"
+password: "root"
+create: true
+load: true
+createDatabaseList:
+  - "drop database if exists reproduceDB;"
+  - "create database reproduceDB;"
+createTableList:
+  - "CREATE TABLE t (a INT NOT NULL, b INT, c INT) ENGINE = InnoDB;"
+loadList:
+  - "INSERT INTO t VALUES (1,2,3), (2,2,4);"
+operationList:
+  - trxId: "1"
+    sql: "set transaction isolation level READ COMMITTED;"
+  - trxId: "1"
+    sql: "select * from t;"
+  - trxId: "1"
+    sql: "UPDATE t SET b = 3 WHERE b = 2 AND c = 3;"
+  - trxId: "1"
+    sql: "select * from t;"
+  - trxId: "2"
+    sql: "set transaction isolation level READ COMMITTED;"
+  - trxId: "2"
+    sql: "select * from t;"
+  - trxId: "2"
+    sql: "UPDATE t SET b = 4 WHERE b = 2 AND c = 4;"
+  - trxId: "2"
+    sql: "select * from t;"
+  - trxId: "1"
+    sql: "commit;"
+  - trxId: "2"
+    sql: "commit;"
+  - trxId: "3"
+    sql: "select * from t;"
+  - trxId: "3"
+    sql: "commit;"
