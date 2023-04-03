@@ -17,6 +17,7 @@ A config is a description of the bug reproduction process.
 Here is an example.
 
 ```yml
+driver: "com.mysql.cj.jdbc.Driver"
 initUrl: "jdbc:mysql://127.0.0.1:3306?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
 connUrl: "jdbc:mysql://127.0.0.1:3306/reproduceDB?serverTimezone=UTC&useServerPrepStmts=true&cachePrepStmts=true"
 user: "root"
@@ -44,6 +45,7 @@ operationList:
 ```
 
 Comments:  
+`driver`: JDBC driver name
 
 `initURL`: A JDBC_URL **without** database name for (re)creating test database  
 
