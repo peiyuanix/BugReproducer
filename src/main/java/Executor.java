@@ -26,6 +26,7 @@ public class Executor {
             case INSERT:
             case UPDATE:
             case DELETE:
+            case BEGIN:
                 executeUpdate(sql, opType);
                 break;
             case SET:
@@ -34,6 +35,8 @@ public class Executor {
             case COMMIT:
                 commit();
                 break;
+            default:
+                throw new RuntimeException("Unknown Operation Type");
         }
     }
 

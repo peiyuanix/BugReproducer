@@ -56,6 +56,9 @@ public class Main {
         @Cleanup Statement stat = conn.createStatement();
         for (String sql : sqlList) {
             stat.execute(sql);
+            if (sql.startsWith("begin")) {
+                System.out.println();
+            }
             System.out.printf("\t%s%n", sql);
         }
     }

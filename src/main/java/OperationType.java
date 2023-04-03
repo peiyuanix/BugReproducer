@@ -7,12 +7,14 @@ public enum OperationType {
     SELECT,
     UPDATE,
     COMMIT,
-    UNKNOWN;
+    UNKNOWN, BEGIN;
 
     public static OperationType detectType(String sql) {
         String firstKeyword = sql.split(" ")[0].toLowerCase(Locale.ROOT);
         if (firstKeyword.startsWith("set")) {
             return OperationType.SET;
+        } else if (firstKeyword.startsWith("begin")) {
+            return OperationType.BEGIN;
         } else if (firstKeyword.startsWith("insert")) {
             return OperationType.INSERT;
         } else if (firstKeyword.startsWith("delete")) {
